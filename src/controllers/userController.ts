@@ -85,16 +85,16 @@ export const upgradeClicker = async (req: Request, res: Response) => {
   });
 
   if (user) {
-    if (user.points >= 25) {
+    if (user.points >= 50) {
       const newClickPower = user.clickPower + 1;
-      const newPoints = user.points - 25;
+      const newPoints = user.points - 50;
       const updatedUser = await prisma.user.update({
         where: {
           username: username,
         },
         data: {
           clickPower: newClickPower,
-          points : newPoints
+          points: newPoints
         },
       });
       res.json(updatedUser);
@@ -103,5 +103,42 @@ export const upgradeClicker = async (req: Request, res: Response) => {
     }
   } else {
     res.json({ message: "User tidak ditemukan" });
+  }
+};
+
+export const gachaClickPower = async (req: Request, res: Response) => {
+  const { username } = req.body;
+  const user = await prisma.user.findUnique({
+    where: {
+      username: username,
+    },
+  });
+  if (user) {
+    if (user.points >= 50) {
+      const number = Math.floor(Math.random() * 2) + 1;
+      if (number === 1) {
+        const newClickPower = user.clickPower * 2;
+        const newPoints = user.points - 50;
+        const updatedUser = await prisma.user.update({
+          where: {
+            username: username,
+          },
+          data: {
+            clickPower: newClickPower,
+            points: newPoints,
+          },
+        });
+        res.json(updatedUser)
+      } else {
+        res.json({ message: "anda tidak beruntung" });
+        return;
+      }
+    } else {
+      res.json({ message: "poin tidak mencukupi" });
+      return;
+    }
+  } else {
+    res.json({ message: "username tidak ada" });
+    return;
   }
 };
