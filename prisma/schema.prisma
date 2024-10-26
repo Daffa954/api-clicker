@@ -16,6 +16,8 @@ datasource db {
 model User {
   id         Int     @id @default(autoincrement())
   username   String  @unique
+    password String @default("temporary")
+
   name       String
   points     Int
   clickPower Int

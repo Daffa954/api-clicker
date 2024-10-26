@@ -11,7 +11,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { username, name } = req.body;
+  const { username, name, password } = req.body;
   if (!username || !name) {
     res.json({ message: "data tidak lengkap" });
   }
@@ -30,6 +30,7 @@ export const createUser = async (req: Request, res: Response) => {
     data: {
       username,
       name,
+      password,
       points: 0,
       clickPower: 1,
       unlockedAutoClicker: false,
@@ -58,6 +59,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const clickTheButton = async (req: Request, res: Response) => {
   const { username } = req.body;
+  
   if (!username) {
     res.json({ message: "data tidak lengkap" });
     return;
@@ -94,7 +96,7 @@ export const upgradeClicker = async (req: Request, res: Response) => {
         },
         data: {
           clickPower: newClickPower,
-          points: newPoints
+          points: newPoints,
         },
       });
       res.json(updatedUser);
@@ -114,25 +116,24 @@ export const gachaClickPower = async (req: Request, res: Response) => {
     },
   });
   if (user) {
-    if (user.points >= 50) {
-      const number = Math.floor(Math.random() * 2) + 1;
+    if (user.points >= 1) {
+      const number = Math.floor(Math.random() * 4) + 1;
+      let newClickPower = user.clickPower;
+      const newPoints = user.points - 1;
+
       if (number === 1) {
-        const newClickPower = user.clickPower * 2;
-        const newPoints = user.points - 50;
-        const updatedUser = await prisma.user.update({
-          where: {
-            username: username,
-          },
-          data: {
-            clickPower: newClickPower,
-            points: newPoints,
-          },
-        });
-        res.json(updatedUser)
-      } else {
-        res.json({ message: "anda tidak beruntung" });
-        return;
+        newClickPower = user.clickPower * 2;
       }
+      const updatedUser = await prisma.user.update({
+        where: {
+          username: username,
+        },
+        data: {
+          clickPower: newClickPower,
+          points: newPoints,
+        },
+      });
+      res.json(updatedUser);
     } else {
       res.json({ message: "poin tidak mencukupi" });
       return;
