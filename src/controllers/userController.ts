@@ -12,7 +12,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   const { username, name, password } = req.body;
-  if (!username || !name) {
+  if (!username || !name || !password) {
     res.json({ message: "data tidak lengkap" });
   }
   //cek username
