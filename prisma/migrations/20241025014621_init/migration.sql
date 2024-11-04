@@ -6,7 +6,6 @@ CREATE TABLE "User" (
     "points" INTEGER NOT NULL,
     "clickPower" INTEGER NOT NULL,
     "unlockedAutoClicker" BOOLEAN NOT NULL,
-
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
